@@ -82,7 +82,7 @@ class BinaryAccuracy(Metric):
         self.total_count = 0
 
     def __call__(self, y_pred, y_true):
-        y_pred_round = y_pred.round().long()
+        y_pred_round = y_pred.round().type_as(y_true)
         self.correct_count += y_pred_round.eq(y_true).float().sum().data[0]
         self.total_count += len(y_pred)
         accuracy = 100. * float(self.correct_count) / float(self.total_count)
