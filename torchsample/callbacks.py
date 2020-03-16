@@ -309,7 +309,7 @@ class ModelCheckpoint(Callback):
     def on_epoch_end(self, epoch, logs=None):
 
         file = self.file.format(epoch='%03i'%(epoch+1), 
-                                loss='%0.4f'%logs[self.monitor])
+                                loss='%0.6f'%logs[self.monitor])
         if self.save_best_only:
             current_loss = logs.get(self.monitor)
             if current_loss is None:
@@ -466,7 +466,7 @@ class ReduceLROnPlateau(Callback):
                  patience=10,
                  epsilon=0, 
                  cooldown=0, 
-                 min_lr=0,
+                 min_lr=1e-8,
                  verbose=0):
         """
         Reduce the learning rate if the train or validation loss plateaus
@@ -535,7 +535,7 @@ class ReduceLROnPlateau(Callback):
                 if self.wait >= self.patience:
                     for p in self.trainer._optimizer.param_groups:
                         old_lr = p['lr']
-                        if old_lr > self.min_lr + 1e-4:
+                        if old_lr > self.min_lr:
                             new_lr = old_lr * self.factor
                             new_lr = max(new_lr, self.min_lr)
                             if self.verbose > 0:
